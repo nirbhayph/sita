@@ -40,6 +40,8 @@ class TermsScreen(QWidget):
         radio_group.addButton(agree_radio)
         radio_group.addButton(disagree_radio)
 
+        disagree_radio.setChecked(True)
+
         next_button = QPushButton("Next")
         back_button = QPushButton("Back")
         next_button.setEnabled(False)
@@ -55,12 +57,12 @@ class TermsScreen(QWidget):
         radio_layout.addWidget(agree_radio)
         radio_layout.addWidget(disagree_radio)
 
-        btn_layout = QHBoxLayout()
-        btn_layout.addStretch()
-        btn_layout.addWidget(back_button)
-        btn_layout.addWidget(next_button)
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(back_button)
+        button_layout.addWidget(next_button)
 
         layout.addWidget(title)
         layout.addWidget(terms_box)
         layout.addLayout(radio_layout)
-        layout.addLayout(btn_layout)
+        layout.addLayout(button_layout)

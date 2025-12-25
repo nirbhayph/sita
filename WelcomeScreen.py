@@ -17,18 +17,18 @@ class WelcomeScreen(QWidget):
         label.setAlignment(Qt.AlignCenter)
         label.setStyleSheet("font-size: 20px;")
 
-        next_btn = QPushButton("Next")
-        cancel_btn = QPushButton("Cancel")
+        next_button = QPushButton("Next")
+        cancel_button = QPushButton("Cancel")
 
-        next_btn.clicked.connect(on_next)
-        cancel_btn.clicked.connect(on_cancel)
+        next_button.clicked.connect(on_next)
+        cancel_button.clicked.connect(on_cancel)
 
-        btn_layout = QHBoxLayout()
-        btn_layout.addStretch()
-        btn_layout.addWidget(cancel_btn)
-        btn_layout.addWidget(next_btn)
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(cancel_button)
+        button_layout.addWidget(next_button)
 
         layout.addStretch()
         layout.addWidget(label)
         layout.addStretch()
-        layout.addLayout(btn_layout)
+        layout.addLayout(button_layout)

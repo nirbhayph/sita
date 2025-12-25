@@ -8,6 +8,9 @@ from PySide6.QtWidgets import (
 from TermsScreen import TermsScreen
 from FinishScreen import FinishScreen
 from WelcomeScreen import WelcomeScreen
+from WirelessScreen import WirelessScreen
+from ConnectionSelectionScreen import ConnectionSelectionScreen
+from WiredScreen import WiredScreen
 
 class Installer(QWidget):
     def __init__(self):
@@ -28,8 +31,18 @@ class Installer(QWidget):
         )
 
         self.finish_screen = FinishScreen(
+            on_next=self.show_connection_selection,
             on_back=self.show_terms
         )
+
+        self.connection_select_screen = ConnectionSelectionScreen(
+            on_wireless=self.show_wireless,
+            on_wired=self.show_wired,
+            on_back=self.show_finish
+        )
+
+        self.wireless_screen = WirelessScreen(on_back=self.show_connection_selection)
+        self.wired_screen = WiredScreen(on_back=self.show_connection_selection)
 
         self.stack.addWidget(self.welcome_screen)
         self.stack.addWidget(self.terms_screen)
@@ -38,7 +51,15 @@ class Installer(QWidget):
         layout = QVBoxLayout(self)
         layout.addWidget(self.stack)
 
-        self.stack.setCurrentWidget(self.welcome_screen)
+        for screen in [
+            self.welcome_screen,
+            self.terms_screen,
+            self.finish_screen,
+            self.connection_select_screen,
+            self.wireless_screen,
+            self.wired_screen
+        ]:
+            self.stack.addWidget(screen)
 
     def show_welcome(self):
         self.stack.setCurrentWidget(self.welcome_screen)
@@ -48,6 +69,15 @@ class Installer(QWidget):
 
     def show_finish(self):
         self.stack.setCurrentWidget(self.finish_screen)
+
+    def show_connection_selection(self):
+        self.stack.setCurrentWidget(self.connection_select_screen)
+
+    def show_wireless(self):
+        self.stack.setCurrentWidget(self.wireless_screen)
+
+    def show_wired(self):
+        self.stack.setCurrentWidget(self.wired_screen)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
