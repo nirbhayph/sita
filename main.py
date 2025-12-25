@@ -3,42 +3,51 @@ from PySide6.QtWidgets import (
     QApplication,
     QWidget,
     QVBoxLayout,
-    QLabel,
-    QPushButton,
-    QHBoxLayout
+    QStackedWidget
 )
+from TermsScreen import TermsScreen
+from FinishScreen import FinishScreen
+from WelcomeScreen import WelcomeScreen
 
 class Installer(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Device Host Setup")
-        self.setFixedSize(500, 300)
+        self.setFixedSize(1000, 600)
 
-        layout = QVBoxLayout()
+        self.stack = QStackedWidget(self)
 
-        self.label = QLabel("Welcome to Device Host Setup")
-        layout.addWidget(self.label)
+        self.welcome_screen = WelcomeScreen(
+            on_next=self.show_terms,
+            on_cancel=self.close
+        )
 
-        btn_layout = QHBoxLayout()
+        self.terms_screen = TermsScreen(
+            on_accept=self.show_finish,
+            on_back=self.show_welcome
+        )
 
-        self.cancel_btn = QPushButton("Cancel")
-        self.next_btn = QPushButton("Next")
+        self.finish_screen = FinishScreen(
+            on_back=self.show_terms
+        )
 
-        self.cancel_btn.clicked.connect(self.close)
-        self.next_btn.clicked.connect(self.on_next)
+        self.stack.addWidget(self.welcome_screen)
+        self.stack.addWidget(self.terms_screen)
+        self.stack.addWidget(self.finish_screen)
 
-        btn_layout.addStretch()
-        btn_layout.addWidget(self.cancel_btn)
-        btn_layout.addWidget(self.next_btn)
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.stack)
 
-        layout.addStretch()
-        layout.addLayout(btn_layout)
+        self.stack.setCurrentWidget(self.welcome_screen)
 
-        self.setLayout(layout)
+    def show_welcome(self):
+        self.stack.setCurrentWidget(self.welcome_screen)
 
-    def on_next(self):
-        self.label.setText("Installing dependencies...")
+    def show_terms(self):
+        self.stack.setCurrentWidget(self.terms_screen)
 
+    def show_finish(self):
+        self.stack.setCurrentWidget(self.finish_screen)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
