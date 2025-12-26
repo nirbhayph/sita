@@ -6,11 +6,11 @@ from PySide6.QtWidgets import (
     QStackedWidget
 )
 from TermsScreen import TermsScreen
-from FinishScreen import FinishScreen
 from WelcomeScreen import WelcomeScreen
 from WirelessScreen import WirelessScreen
 from ConnectionSelectionScreen import ConnectionSelectionScreen
 from WiredScreen import WiredScreen
+from InstallDependencies import InstallerPage
 
 class Installer(QWidget):
     def __init__(self):
@@ -26,11 +26,11 @@ class Installer(QWidget):
         )
 
         self.terms_screen = TermsScreen(
-            on_accept=self.show_finish,
+            on_accept=self.show_installer,
             on_back=self.show_welcome
         )
 
-        self.finish_screen = FinishScreen(
+        self.installer_screen = InstallerPage(
             on_next=self.show_connection_selection,
             on_back=self.show_terms
         )
@@ -38,28 +38,24 @@ class Installer(QWidget):
         self.connection_select_screen = ConnectionSelectionScreen(
             on_wireless=self.show_wireless,
             on_wired=self.show_wired,
-            on_back=self.show_finish
+            on_back=self.show_installer
         )
 
         self.wireless_screen = WirelessScreen(on_back=self.show_connection_selection)
         self.wired_screen = WiredScreen(on_back=self.show_connection_selection)
 
-        self.stack.addWidget(self.welcome_screen)
-        self.stack.addWidget(self.terms_screen)
-        self.stack.addWidget(self.finish_screen)
-
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.stack)
-
         for screen in [
             self.welcome_screen,
             self.terms_screen,
-            self.finish_screen,
+            self.installer_screen,
             self.connection_select_screen,
             self.wireless_screen,
             self.wired_screen
         ]:
             self.stack.addWidget(screen)
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.stack)
 
     def show_welcome(self):
         self.stack.setCurrentWidget(self.welcome_screen)
@@ -67,8 +63,8 @@ class Installer(QWidget):
     def show_terms(self):
         self.stack.setCurrentWidget(self.terms_screen)
 
-    def show_finish(self):
-        self.stack.setCurrentWidget(self.finish_screen)
+    def show_installer(self):
+        self.stack.setCurrentWidget(self.installer_screen)
 
     def show_connection_selection(self):
         self.stack.setCurrentWidget(self.connection_select_screen)
