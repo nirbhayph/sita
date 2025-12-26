@@ -5,6 +5,8 @@ import tempfile
 import os
 import urllib.request
 from abc import ABC, abstractmethod
+from typing import Union
+
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -188,7 +190,7 @@ class LinuxInstaller(PlatformInstaller):
         self.sudo_command = self._detect_sudo_gui()
 
     @staticmethod
-    def _detect_package_manager() -> str | None:
+    def _detect_package_manager() -> Union[str, None]:
         # Detect which package manager is available on the system
         if shutil.which('apt-get'):
             return 'apt'
