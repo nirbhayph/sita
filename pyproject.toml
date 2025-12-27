@@ -1,0 +1,15 @@
+[project]
+name = "sita"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+
+dependencies = [
+    "pillow>=11.3.0",
+    "PySide6==6.10.1",
+    "PySide6-Addons==6.10.1",
+    "PySide6-Essentials==6.10.1",
+    "qrcode[pil]>=8.2",
+    "shiboken6==6.10.1",
+]
