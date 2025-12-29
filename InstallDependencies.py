@@ -6,6 +6,7 @@ import os
 import urllib.request
 from abc import ABC, abstractmethod
 from typing import Union
+import re
 
 from PySide6.QtWidgets import (
     QWidget,
@@ -48,7 +49,9 @@ class PlatformInstaller(ABC):
     def check_nodejs() -> bool:
         try:
             result = subprocess.run(['node', '--version'], capture_output=True, text=True, timeout=5)
-            return result.returncode == 0
+            # check if the output has numbers in this format 'vx.x.x'
+            output = (result.stdout or '') + '\n' + (result.stderr or '')
+            return bool(re.search(r'\bv\d+\.\d+\.\d+\b', output))
         except (FileNotFoundError, subprocess.TimeoutExpired):
             return False
 
@@ -56,7 +59,9 @@ class PlatformInstaller(ABC):
     def check_npm() -> bool:
         try:
             result = subprocess.run(['npm', '--version'], capture_output=True, text=True, timeout=5)
-            return result.returncode == 0
+            # check if the output has numbers in this format 'x.x.x'
+            output = (result.stdout or '') + '\n' + (result.stderr or '')
+            return bool(re.search(r'\b\d+\.\d+\.\d+\b', output))
         except (FileNotFoundError, subprocess.TimeoutExpired):
             return False
 
@@ -64,7 +69,9 @@ class PlatformInstaller(ABC):
     def check_appium() -> bool:
         try:
             result = subprocess.run(['appium', '--version'], capture_output=True, text=True, timeout=5)
-            return result.returncode == 0
+            # check if the output has numbers in this format 'x.x.x'
+            output = (result.stdout or '') + '\n' + (result.stderr or '')
+            return bool(re.search(r'\b\d+\.\d+\.\d+\b', output))
         except (FileNotFoundError, subprocess.TimeoutExpired):
             return False
 
