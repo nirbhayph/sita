@@ -313,7 +313,7 @@ class InstallWorker(QThread):
 
     def run(self):
         try:
-            # Get a platform-specific installer
+            # Get a platform-specific installers
             installer = get_platform_installer()
 
             self.status.emit("Checking system requirements...")
