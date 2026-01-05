@@ -1,38 +1,50 @@
+from services.wifi_qr_pairing import WifiQrPairingService
 from services.adb_service import AdbService
-
-
-class WirelessSetupState:
-    def __init__(self):
-        self.device_connected = False
-        self.device_name = None
-        self.waiting_for_connection = False
-        self.error = None
 
 
 class WirelessSetupController:
     def __init__(self):
-        self.waiting_for_connection = False
+        self.qr_service = WifiQrPairingService()
+        self.qr_data = None
+        self.pairing_in_progress = False
 
-    def pair(self, ip_port: str, code: str) -> tuple[bool, str]:
-        success, message = AdbService.pair_device(ip_port, code)
-        if success:
-            self.waiting_for_connection = True
-        return success, message
+    def start_qr_pairing(self):
+        if not self.qr_service.check_mdns_support():
+            raise RuntimeError(
+                "ADB mDNS not supported. Please update platform-tools."
+            )
 
-    def poll(self) -> WirelessSetupState:
-        state = WirelessSetupState()
-        state.waiting_for_connection = self.waiting_for_connection
+        self.qr_data = self.qr_service.generate_qr_code()
+        self.pairing_in_progress = True
+        return self.qr_data
 
-        device_id, status = AdbService.get_wireless_device()
+    def poll_for_device(self) -> tuple[bool, str | None]:
+        """
+        Returns (connected, device_model)
+        """
+        if not self.pairing_in_progress or not self.qr_data:
+            return False, None
 
-        if not device_id:
-            return state
+        services = self.qr_service.scan_mdns_services()
 
-        if status == "device":
-            state.device_connected = True
-            state.device_name = AdbService.get_device_model(device_id)
-            self.waiting_for_connection = False
-        elif status == "unauthorized":
-            state.error = "Device connected but not authorized"
+        for service_name, ip, port in services:
+            if service_name == self.qr_data.service_name:
+                success = self.qr_service.pair(
+                    ip=ip,
+                    port=port,
+                    password=self.qr_data.password
+                )
 
-        return state
+                if success:
+                    self.pairing_in_progress = False
+
+                    # 🔑 Get device model name
+                    device_id = AdbService.get_connected_device_id()
+                    model = (
+                        AdbService.get_device_model(device_id)
+                        if device_id else "Android device"
+                    )
+
+                    return True, model
+
+        return False, None

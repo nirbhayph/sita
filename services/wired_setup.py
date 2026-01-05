@@ -1,4 +1,5 @@
 from services.adb_service import AdbService
+from services.wifi_qr_pairing import WifiQrPairingService
 
 
 class WiredSetupState:
