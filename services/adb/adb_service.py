@@ -112,3 +112,26 @@ class AdbService:
             })
 
         return devices
+
+    @staticmethod
+    def get_usb_device_id() -> str | None:
+        result = subprocess.run(
+            ["adb", "devices", "-l"],
+            capture_output=True,
+            text=True
+        )
+
+        for line in result.stdout.splitlines()[1:]:
+            if not line.strip():
+                continue
+
+            parts = line.split()
+            device_id = parts[0]
+            status = parts[1]
+
+            is_usb = any(part.startswith("usb:") for part in parts)
+
+            if status == "device" and is_usb:
+                return device_id
+
+        return None

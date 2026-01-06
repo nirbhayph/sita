@@ -15,6 +15,7 @@ class WirelessScreen(QWidget):
         super().__init__()
         self.on_back = on_back
         self.controller = WirelessSetupController()
+        self.timer = None
 
         self._setup_ui()
         self._connect_signals()
@@ -66,7 +67,7 @@ class WirelessScreen(QWidget):
 
     def _connect_signals(self):
         self.generate_qr_button.clicked.connect(self._on_generate_qr)
-        self.back_button.clicked.connect(self.on_back)
+        self.back_button.clicked.connect(self._on_back_clicked)
 
     # ---------- Polling ----------
 
@@ -85,7 +86,12 @@ class WirelessScreen(QWidget):
 
             pixmap = QPixmap(qr_data.image_path)
             self.qr_label.setPixmap(
-                pixmap.scaled(220, 220, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                pixmap.scaled(
+                    220,
+                    220,
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation
+                )
             )
 
             self._set_status("Scan QR code on your phone", "green")
@@ -102,6 +108,30 @@ class WirelessScreen(QWidget):
                 "green"
             )
             self.timer.stop()
+
+    def _on_back_clicked(self):
+        self._reset()
+        self.on_back()
+
+    # ---------- Reset ----------
+
+    def _reset(self):
+        # Stop polling
+        if self.timer and self.timer.isActive():
+            self.timer.stop()
+
+        # Reset controller state
+        self.controller = WirelessSetupController()
+
+        # Reset UI
+        self.qr_label.setText("QR code not generated")
+        self.qr_label.setPixmap(QPixmap())
+
+        self.status_label.setText("Waiting to start pairing…")
+        self.status_label.setStyleSheet("color: gray;")
+
+        # Restart polling
+        self.timer.start(2000)
 
     # ---------- Helpers ----------
 
