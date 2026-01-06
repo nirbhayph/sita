@@ -2,13 +2,12 @@ from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QLabel,
-    QPushButton,
-    QHBoxLayout
+    QPushButton
 )
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QPixmap
 
-from services.wireless_setup import WirelessSetupController
+from services.device_setup.wireless_setup import WirelessSetupController
 
 
 class WirelessScreen(QWidget):

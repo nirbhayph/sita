@@ -1,5 +1,5 @@
-from services.device_setup_base import BaseDeviceSetupController
-from services.adb_service import AdbService
+from services.device_setup.device_setup_base import BaseDeviceSetupController
+from services.adb.adb_service import AdbService
 
 
 class WiredSetupState:

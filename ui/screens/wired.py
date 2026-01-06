@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import QTimer
 
-from services.wired_setup import WiredSetupController
+from services.device_setup.wired_setup import WiredSetupController
 
 
 def _noop():

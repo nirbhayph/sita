@@ -1,6 +1,6 @@
 from abc import ABC
-from services.adb_service import AdbService
-from services.device_info import DeviceInfo
+from services.adb.adb_service import AdbService
+from services.device_setup.device_info import DeviceInfo
 
 
 class BaseDeviceSetupController(ABC):

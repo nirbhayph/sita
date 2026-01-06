@@ -1,5 +1,5 @@
-from services.device_setup_base import BaseDeviceSetupController
-from services.wifi_qr_pairing import WifiQrPairingService
+from services.device_setup.device_setup_base import BaseDeviceSetupController
+from services.adb.wifi_qr_pairing import WifiQrPairingService
 
 
 class WirelessSetupController(BaseDeviceSetupController):

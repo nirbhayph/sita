@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Slot
 
-from services.install_worker import InstallWorker
+from services.installers.install_worker import InstallWorker
 
 
 class InstallerPage(QWidget):
