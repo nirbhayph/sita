@@ -19,7 +19,7 @@ class InstallerApp(QWidget):
         self._setup_navigation()
         self._setup_layout()
 
-        self.router.go(Screen.WELCOME)
+        self.router.go(Screen.CONNECTION_SELECT)
 
     def _setup_window(self):
         self.setWindowTitle("Device Host Setup")

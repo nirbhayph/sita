@@ -84,3 +84,31 @@ class AdbService:
         except Exception:
             return None, None
 
+    @staticmethod
+    def get_all_devices() -> list[dict]:
+        result = subprocess.run(
+            ["adb", "devices", "-l"],
+            capture_output=True,
+            text=True
+        )
+
+        devices = []
+
+        for line in result.stdout.splitlines()[1:]:
+            if not line.strip():
+                continue
+
+            parts = line.split()
+            device_id = parts[0]
+            status = parts[1] if len(parts) > 1 else "unknown"
+
+            is_usb = any(part.startswith("usb:") for part in parts)
+
+            devices.append({
+                "id": device_id,
+                "status": status,
+                "is_usb": is_usb,
+                "is_wireless": not is_usb,
+            })
+
+        return devices
