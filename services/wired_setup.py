@@ -1,5 +1,5 @@
+from services.device_setup_base import BaseDeviceSetupController
 from services.adb_service import AdbService
-from services.wifi_qr_pairing import WifiQrPairingService
 
 
 class WiredSetupState:
@@ -9,16 +9,18 @@ class WiredSetupState:
         self.usb_debugging_enabled = False
 
 
-class WiredSetupController:
+class WiredSetupController(BaseDeviceSetupController):
     def get_state(self) -> WiredSetupState:
         state = WiredSetupState()
 
-        device_id = AdbService.get_connected_device_id()
-        if not device_id:
+        device = self._get_connected_device()
+        if not device:
             return state
 
         state.device_connected = True
-        state.device_model = AdbService.get_device_model(device_id)
-        state.usb_debugging_enabled = AdbService.is_usb_debugging_enabled(device_id)
+        state.device_model = device.model
+        state.usb_debugging_enabled = AdbService.is_usb_debugging_enabled(
+            device.device_id
+        )
 
         return state

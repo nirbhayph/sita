@@ -1,8 +1,8 @@
+from services.device_setup_base import BaseDeviceSetupController
 from services.wifi_qr_pairing import WifiQrPairingService
-from services.adb_service import AdbService
 
 
-class WirelessSetupController:
+class WirelessSetupController(BaseDeviceSetupController):
     def __init__(self):
         self.qr_service = WifiQrPairingService()
         self.qr_data = None
@@ -19,9 +19,6 @@ class WirelessSetupController:
         return self.qr_data
 
     def poll_for_device(self) -> tuple[bool, str | None]:
-        """
-        Returns (connected, device_model)
-        """
         if not self.pairing_in_progress or not self.qr_data:
             return False, None
 
@@ -37,14 +34,7 @@ class WirelessSetupController:
 
                 if success:
                     self.pairing_in_progress = False
-
-                    # 🔑 Get device model name
-                    device_id = AdbService.get_connected_device_id()
-                    model = (
-                        AdbService.get_device_model(device_id)
-                        if device_id else "Android device"
-                    )
-
-                    return True, model
+                    device = self._get_connected_device()
+                    return True, device.model if device else "Android device"
 
         return False, None
